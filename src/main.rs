@@ -24,4 +24,19 @@ aysnc fn main() {
         .authenticate(NoiseConfig::xx(auth_keys).into_authentic)
         .multiplex(mplex::MpexConfig::new())
         .boxed();
+
+    let mut behavior = RecipeBehaviour {
+        floodsub: Floodsub::new(PEER_ID.clone()),
+        mdns: TokioMdns::new().expect("mdns yaratish"),
+        respomse_sender,
+    };
+
+    behavior.floodsub.subscribe(TOPIC.clone());
+
+
+    let mut swarm = SwarmBuilder::new(transp, behavior, PEER_ID.clone())
+        .executor(Box::new(|fut|){
+            tokio::spawn(fut);
+        })
+        .build();
 }
