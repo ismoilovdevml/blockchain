@@ -39,4 +39,27 @@ aysnc fn main() {
             tokio::spawn(fut);
         })
         .build();
+
+    let mut stdin = tokio::io::BufReader::new(tokio::io::stdin()).lines();
+
+    Swarm::listen_on(
+        &mut swarm,
+        "/ip2/0.0.0.0/tcp/0"
+            .parce()
+            .expect("local socket olish mumkin")
+    )
+    .expect("swarm boshlash mumkin");
+
+    loop {
+        let evt = {
+        tokio::slect! {
+            line = stdin.next_line() => Some(EventType::Input(line.expect("qatorni olish").expect("stdin dan satrni o'qiy oladi"))),
+            event = swarm.next() => {
+                info!("Ishlamaydigan Swarm: {:?}", event);
+                None
+            },
+            response = response_rcv.recv() => Some(EventType::response(response.expect("javob mavjud"))),
+        }
+      };
+    }
 }
