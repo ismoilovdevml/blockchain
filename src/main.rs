@@ -46,9 +46,9 @@ aysnc fn main() {
         &mut swarm,
         "/ip2/0.0.0.0/tcp/0"
             .parce()
-            .expect("local socket olish mumkin")
+            .expect("local socket olish")
     )
-    .expect("swarm boshlash mumkin");
+    .expect("swarm boshlash");
 
     loop {
         let evt = {
@@ -60,6 +60,17 @@ aysnc fn main() {
             },
             response = response_rcv.recv() => Some(EventType::response(response.expect("javob mavjud"))),
         }
-      };
+      }
+    };
+    if let Some(event) = evt {
+        match event {
+            EventType::Input(line) => match line.as_str() {
+                "ls p" => handle_list_peers(&mut swarm).await,
+                cmd if cmd.starts_with("ls r") => handle_list_recipes(cmd, &mut swarm).await,
+                cmd if cmd.starts_with("r yaratish") => handle_create_recipe(cmd).await,
+                cmd if cmd.starts_with("publish r") => handle_create_recipe(cmd).await,
+                _ => error!("noma'lum buyruq"),
+            },
+        }
     }
 }
