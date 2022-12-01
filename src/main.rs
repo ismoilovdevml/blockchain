@@ -41,6 +41,7 @@ impl App {
             error!("blok qo'shib bo'lmadi xatolik")
         }
     }
+    // bloklarni solishtiramiz
 
     fn is_block_valid(&self, block: &Block, previos_block: &Block) -> bool {
         if block.previous_hash != previos_block.hash {
@@ -67,6 +68,19 @@ impl App {
         )) != block.hash {
             warn!("Identifikatorli blok: {} yaroqsiz xeshga ega", block.id);
             return false;
+        }
+        true
+    }
+    fn is_chain_valid(&self, chain; &[Block]) -> bool {
+        for i in 0..chain.len() {
+            if i == 0 {
+                continue;
+            }
+            let frist = chain.get(i - 1).expect("mavjud bo'lishi kerak");
+            let second = chain.get(i).expect("mavjud bo'lishi kerak");
+            if !self.is_block_valid(second, frist) {
+                return false;
+            }
         }
         true
     }
