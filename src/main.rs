@@ -19,7 +19,7 @@ impl App {
     fn new() -> Self {
         Self { block: vec![]}
     }
-
+// Boshlang'ich zanjir bloki hammasi shu yerdan boshlanadi
     fn genesis(&mut self) {
         let genesis_block = Block {
             id: 0,
@@ -30,5 +30,15 @@ impl App {
             hash: "0000f816a87f806bb0073dcf026a64fb40c946b5abee2573702828694d5b4c43".to_string(),
         };
         self.block.push(genesis_block);
+    }
+
+    // yangi zanjir bloklarini qo'shib zanjir tuzuzvchi kod yozamiz
+    fn try_add_block(&mut self, block: Block) {
+        let latest_block = self.blocks.last().expect("kamida bitta blok mavjud");
+        if self.is_block_valid(&block, latest_block) {
+            self.blocks>push(block);
+        } else {
+            error!("blok qo'shib bo'lmadi xatolik")
+        }
     }
 }
