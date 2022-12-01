@@ -41,4 +41,33 @@ impl App {
             error!("blok qo'shib bo'lmadi xatolik")
         }
     }
+
+    fn is_block_valid(&self, block: &Block, previos_block: &Block) -> bool {
+        if block.previous_hash != previos_block.hash {
+            warn!("ID bilan bloklash: {} oldingi xesh notog'ri", block.id);
+            return false;
+        } else if !hash_to_binnary_representation(
+            &hex::decode(&block.hash).expect("hex dan dekodlashi mumkin"),
+        )
+        .starts_with(DIFFICULTY_PREFIX) {
+            warn!("id bilan bloklash: {} noto'g'ri xatolikka ega", block.id);
+            return  false;
+        } else if block.id !=previos_block.id + 1 {
+            warn!(
+                "ID bilan bloklash: {} oxirgi blokdan keyingi keyingi blok emas: {}",
+                block.id, previos_block.id
+            );
+            return false;
+        } else if hex::encode(calculate_hash(
+            block.id,
+            block.timestamp,
+            &block.previous_hash,
+            &block.data,
+            block.nonce,
+        )) != block.hash {
+            warn!("Identifikatorli blok: {} yaroqsiz xeshga ega", block.id);
+            return false;
+        }
+        true
+    }
 }
