@@ -1,5 +1,6 @@
-# blockchain
-## Rust Dasturlash tilida yozilgan Blockchain (Per-to-per texnologiyasi asosida)
+# Blockchain
+## Rust Dasturlash tilida yozilgan Blockchain
+## (Per-to-per texnologiyasi asosida)
 
 Oxirgi vaqtlarda Blockchain texnologiyasi rivojlanib bormoqda. Men xam Blockchainga qiziqib Rust dasturlash tilidan foydalangan holda kichik Blockchain dasturini yozishni boshladim.
 
