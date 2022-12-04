@@ -1,4 +1,5 @@
 use chrono::Utc;
+use pretty_env_logger::env_logger::fmt::Timestamp;
 use serde::{Serialize, Deserialize};
 
 pub struct App {
@@ -28,6 +29,30 @@ impl Block {
             data,
             nonce,
         }
+    }
+}
+
+// Mining qilish
+fn mine_block(id: u64, timestamp: i64, previous_hash: &str, data: &str) -> (u64, String) {
+    info!("mining blok...");
+    let mut nonce = 0;
+
+    loop {
+        if nonce % 100000 == 0 {
+            info!("nonce: {}", nonce);
+        }
+        let hash = calculate_hash(id, timestamp, previous_hash, data, nonce);
+        let binary_hash = hash_to_binary_representation(&hash);
+        if binary_hash.starts_with(DIFFICULTY_PREFIX) {
+            info!(
+                "mining qilingan nonce: {}, hash: {}, binary hash: {}",
+                nonce,
+                hex::encode(&hash)
+                binary_hash
+            );
+            return (nonce, hex::encode(hash));
+        }
+        nonce += 1;
     }
 }
 
