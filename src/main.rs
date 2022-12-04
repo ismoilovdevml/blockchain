@@ -1,4 +1,7 @@
+use core::time;
+
 use chrono::Utc;
+use libp2p::gossipsub::Hasher;
 use pretty_env_logger::env_logger::fmt::Timestamp;
 use serde::{Serialize, Deserialize};
 
@@ -30,6 +33,19 @@ impl Block {
             nonce,
         }
     }
+}
+
+fn calculate_hash(id: u64, timestamp: i64, previous_hash: &str, data: &str, nonce: u64) -> Vec<u8> {
+    let data = serde_json::json!({
+        "id": id,
+        "previous_hash": previous_hash,
+        "data": data,
+        "timestamp": timestamp,
+        "nonce": nonce
+    });
+    let mut hasher =Sha256::new();
+    hasher.update(data.to_string().as_bytes());
+    hasher.finalize().as_slice().to_owned()
 }
 
 // Mining qilish
